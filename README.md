@@ -1,2 +1,2 @@
 # stardust
-mindstorm robot project 
+mindstorm robot project for stardust team
