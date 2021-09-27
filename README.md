@@ -1,2 +1,1 @@
-This is the team project for mindstorm robot wro 2021
-
+Our WRO team's project code for the WRO contest 2020-2021. The commented parts are either in ''' or #. Feel free to use this code (as long as its not for the contest), and the commented out parts are mostly useless. 
