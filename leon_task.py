@@ -6,6 +6,7 @@ timer = Timer()
 motorpair = MotorPair('A', 'B')
 color = ColorSensor('C')
 hub = MSHub()
+motor=Motor('E')
 
 def LineFollow(stopAt):
     print("-----------------------")
@@ -42,9 +43,7 @@ def TurnRight(dis):
     print("************************")
     motorpair.move_tank(dis, 'cm', left_speed=30, right_speed=-30)
 
-
-
-def YellowPickUp():
+def RedPickUp():
     print("************************")
     print("Pick Up!")
     print("************************")
@@ -54,18 +53,34 @@ def YellowPickUp():
     wait_for_seconds(2)
     if ColorSensor('D').get_color() == 'red':
         motor.run_for_rotations(1, speed=10)
+        motorpair.move(-13, 'cm',speed=10)
     else:
-       motorpair.move(-12, 'cm',speed=10)
+       motorpair.move(-13, 'cm',speed=10)
        motor.run_for_rotations(1, speed=10)
 '''        motorpair.move(-3, 'cm')
         TurnRight(-16)
         motor.run_for_rotations(1, speed=10)
         LineFollow(2)'''
-#motor=Motor('E')
-#motor.run_for_rotations(1, speed=10)
+def Detector(amount):
+    TurnRight(8)
+    wait_for_seconds(2)
+    motor.run_for_rotations(-1, speed=10)
+    motorpair.move(amount,'cm',speed=10)
+    wait_for_seconds(2)
+    if ColorSensor('D').get_color() == 'red':
+        motor.run_for_rotations(1, speed=10)
+        motorpair.move(-amount, 'cm',speed=10)
+    else:
+        motorpair.move(-amount, 'cm',speed=10)
+        motor.run_for_rotations(1, speed=10)
+    TurnRight(-8)
 LineFollow(1)
-motorpair.move(5,'cm',speed=10)
-TurnRight(8)
-YellowPickUp()
-TurnRight(-8)
-LineFollow(5)
+Detector(13)
+LineFollow(1)
+Detector(18)
+LineFollow(1)
+Detector(13)
+LineFollow(1)
+TurnRight(7)
+motorpair.move(50,'cm',speed=10)
+motor.run_for_rotations(-1,speed=10)
