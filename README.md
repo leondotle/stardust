@@ -1,1 +1,1 @@
-Our WRO team's project code for the WRO contest 2020-2021. The commented parts are either in ''' or #. Feel free to use this code (as long as its not for the contest), and the commented out parts are mostly useless. 
+This is a repository for our WRO team's project code, specifically for the 2021 WRO competition. The commented parts are either in **'''** or **#**. Feel free to use this code (as long as its not for the contest).
