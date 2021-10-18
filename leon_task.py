@@ -7,7 +7,8 @@ motorpair = MotorPair('A', 'B')
 color = ColorSensor('C')
 hub = MSHub()
 motor=Motor('E')
-
+def Move(MathYuanGod):
+    motorpair.move(MathYuanGod,'cm',speed=10)
 def LineFollow(stopAt):
     print("-----------------------")
     print("Starting line following")
@@ -19,7 +20,7 @@ def LineFollow(stopAt):
         turn_rate = (color.get_reflected_light() -70 * 0.7)
 
         #print("Turn rate: " + str(turn_rate))
-        motorpair.start(steering=int(turn_rate), speed = 20)
+        motorpair.start(steering=int(turn_rate), speed=20)
         if ColorSensor('D').get_reflected_light() < 40:
             if timer.now() > 1:
                 passed_lines += 1
@@ -43,44 +44,34 @@ def TurnRight(dis):
     print("************************")
     motorpair.move_tank(dis, 'cm', left_speed=30, right_speed=-30)
 
-def RedPickUp():
-    print("************************")
-    print("Pick Up!")
-    print("************************")
-    motor = Motor('E')
-    motor.run_for_rotations(-0.8, speed=10)
-    motorpair.move(13, 'cm', speed=10)
-    wait_for_seconds(2)
-    if ColorSensor('D').get_color() == 'red':
-        motor.run_for_rotations(1, speed=10)
-        motorpair.move(-13, 'cm',speed=10)
-    else:
-       motorpair.move(-13, 'cm',speed=10)
-       motor.run_for_rotations(1, speed=10)
-'''        motorpair.move(-3, 'cm')
-        TurnRight(-16)
-        motor.run_for_rotations(1, speed=10)
-        LineFollow(2)'''
 def Detector(amount):
-    TurnRight(8)
+    TurnRight(12)
     wait_for_seconds(2)
-    motor.run_for_rotations(-1, speed=10)
+    motor.run_for_rotations(0.15, speed=10)
     motorpair.move(amount,'cm',speed=10)
     wait_for_seconds(2)
-    if ColorSensor('D').get_color() == 'red':
-        motor.run_for_rotations(1, speed=10)
+    if ColorSensor('D').get_color() == 'red' or ColorSensor('C').get_color()=='red':
+        motor.run_for_rotations(0.15, 10)
+        Move(9)
+        motor.run_for_rotations(-0.4, speed=10)
         motorpair.move(-amount, 'cm',speed=10)
+        Move(-9)
     else:
-        motorpair.move(-amount, 'cm',speed=10)
-        motor.run_for_rotations(1, speed=10)
-    TurnRight(-8)
+        motor.run_for_rotations(-0.15,speed=10)
+        motorpair.move(-amount,'cm',speed=10)
 LineFollow(1)
-Detector(13)
+Detector(11)
+TurnRight(-12)
 LineFollow(1)
 Detector(18)
+TurnRight(-12)
 LineFollow(1)
+Detector(11)
+TurnRight(-12)
+LineFollow(2)
 Detector(13)
+TurnRight(-12)
 LineFollow(1)
-TurnRight(7)
-motorpair.move(50,'cm',speed=10)
-motor.run_for_rotations(-1,speed=10)
+TurnRight(12)
+Move(30)
+motor.run_for_rotations(-0.4,speed=10)
