@@ -11,7 +11,7 @@ LINE_FOLLOW_DIRECTION = 20
 
 turn = False
 intersections = 0
-phase = 1
+lights = []
 
 # Create your objects here.
 hub = MSHub()
@@ -39,7 +39,7 @@ def line_follow(color_sensor, direction):
     motor_pair.start(direction, speed = SPEED)
 
 def turn(position):
-    global SPEED, Turn, motor_pair
+    global SPEED, turn
     yaw = hub.motion_sensor.get_yaw_angle() + 180
     if abs(position) > 1:
         Turn = True
@@ -62,54 +62,108 @@ def claw(position):
         else:
             motor.run_to_position(position, direction = 'clockwise')
 
-def solar_panel():
-    while distance_d.get_distance_cm() != 4:
-        line_follow(color_f, 'R')
-    motor_pair.move(6, 'cm')
-    turn(-90)
+def start():
     claw(90)
-    motor_pair.move(2, 'cm')
-    motor_pair.move(-16, 'cm')
+    motor_pair.set_default_speed(SPEED)
+    motor_pair.move(10)
+    claw(0)
+    motor_pair.move(-10)
+    turn(90)
+    solar_panel()
+    turn(-90)
 
-def light_bulbs():
+def solar_panel():
+    if distance_d.get_distance_cm() < 10:
+        sun = 'R'
+    else:
+        sun = 'L'
+        if distance_d.get_distance_cm() > 4:
+            motor_pair.start()
+        motor_pair.stop()
+    if sun == 'L':
+        turn(-90)
+        motor_pair.move(20)
+        while intersections < 1:
+            line_follow(color_f, 'R')
+            detect_intersection(color_e)
+        motor_pair.move(5)
+        turn(-90)
+        while intersections < 1:
+            line_follow(color_f, 'R')
+        while intersections < 2:
+            line_follow(color_e, 'L')
+            motor_pair.start()
+            detect_intersection(color_e)
+            detect_intersection(color_f)
+            motor_pair.stop()
+    else:
+        turn(-90)
+        motor_pair.move(20)
+        while intersections < 4:
+            line_follow(color_e, 'L')
+            detect_intersection(color_f)
+        motor_pair.move(5)
+        turn(90)
+        while distance_d.get_distance_cm() != 4:
+            motor_pair.move(6, 'cm')
+            turn(90)
+            claw(90)
+            motor_pair.move(2, 'cm')
+            motor_pair.move(-16, 'cm')
+        turn(90)
+        while intersections < 5:
+            line_follow(color_f, 'R')
+            motor_pair.start()
+            detect_intersection(color_e)
+            detect_intersection(color_f)
+            motor_pair.stop()
+    return sun
+
+def light_bulbs(dist):
+    global lights
+    motor_pair.move(dist)
+    claw(50)
+    if color_e.get_color() == 'red' color_e.get_color() == 'yellow':
+        lights += [color_e.get_color()]
+    if color_f.get_color() == 'red' color_f.get_color() == 'yellow':
+        lights += [color_f.get_color()]
+    if lights[len(lights) - 1] == 'red':
+        claw(90)
+        motor_pair.move(10)
+        claw(0)
+        motor_pair.move(-10)
+    motor_pair.move(0 - dist)
+
+def red_light_bulbs(sun):
+    global lights
+    if sun == 'L':
+        light_bulbs(10)
+        turn(-90)
+        while intersections < 3:
+            line_follow(color_e, 'L')
+            detect_intersections(color_f)
+        motor_pair.move(5)
+        turn(90)
+        light_bulbs(14)
+        motor_pair.move(-5)
+        turn(-90)
+        while intersections < 4:
+            line_follow(color_f, 'R')
+        motor_pair.move(5)
+        turn(-90)
+        light_bulbs(8)
+        motor_pair.move(-5)
+        turn(90)
+        while intersections < 5:
+            line_follow(color_e, 'L')
+    else:
+        asasdfasdfasldkfjas;ldkjf;sladkjfa;lskdjf;lksjflkadskflsakdjfl;kdskfasfkasfdfjsadf
+
+def white_light_bulbs():
     pass
     None
 
 #Write your program here.
-claw(90)
-motor_pair.set_default_speed(SPEED)
-motor_pair.move(10)
-claw(0)
-motor_pair.move(-10)
-turn(90)
-if distance_d.get_distance_cm() < 10:
-    sun = 'R'
-else:
-    sun = 'R'
-    if distance_d.get_distance_cm() > 4:
-        motor_pair.start()
-    motor_pair.stop()
-print(sun)
-if sun == 'L':
-    turn(-90)
-    motor_pair.move(20)
-    while intersections < 1:
-        line_follow(color_f, 'R')
-        detect_intersection(color_e)
-    motor_pair.move(6)
-    turn(-90)
-else:
-    turn(-90)
-    motor_pair.move(20)
-    while intersections < 4:
-        line_follow(color_e, 'L')
-        detect_intersection(color_f)
-    motor_pair.move(6)
-    turn(90)
-solar_panel()
-turn(-90)
-while intersections < 5:
-    motor_pair.start()
-    detect_intersection(color_e)
-    detect_intersection(color_f)
-motor_pair.stop()
+start()
+for light in range(6):
+    red_light_bulbs(solar_panel())
